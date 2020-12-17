@@ -3,3 +3,4 @@
 app.*.js
 dist/
 node_modules/
+lib/

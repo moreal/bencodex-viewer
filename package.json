@@ -10,6 +10,9 @@
   "keywords": [
     "bencodex"
   ],
+  "files": [
+    "lib/**/*"
+  ],
   "author": "Hong Minhee",
   "license": " AGPL-3.0-or-later",
   "devDependencies": {
