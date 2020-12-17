@@ -1,136 +1,83 @@
 import * as React from 'react';
-import { useCallback, useState } from 'react'
-import { render } from 'react-dom';
-import { useDropzone } from 'react-dropzone'
-import { decode } from 'bencodex';
-import { Buffer } from 'buffer';
-import styled from '@emotion/styled';
+import { useState } from 'react'
+import styled from "@emotion/styled";
 import HexEditor from 'react-hex-editor';
 
-const BencodexDropzone = styled.div`
-    border: 10px dashed silver;
-    border-radius: 10px;
-    color: gray;
-    font-family: sans-serif;
-    padding: 10px;
-    margin-bottom: 10px;
-    &[data-active=active] {
-        border-style: solid;
-        border-color: gray;
-        color: #333;
-    }
-`;
-
-const BencodexViewer = () => {
-    const [value, setValue] = useState(undefined);
-    const onDrop = useCallback(acceptedFiles => {
-        if (acceptedFiles.length > 0) {
-            const file = acceptedFiles[0];
-            file.arrayBuffer().then((aBuffer: ArrayBuffer) => {
-                const buffer: Buffer = Buffer.from(aBuffer);
-                setValue(decode(buffer));
-            });
-        }
-    }, []);
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop
-    });
-
-    return <>
-        <BencodexDropzone
-            {...getRootProps()}
-            data-active={isDragActive ? 'active' : 'inactive'}>
-
-            <input {...getInputProps()} />
-            {isDragActive
-                ? <p>Drop the Bencodex file&hellip;</p>
-                : <p>Drag &amp; drop a Bencodex file here,
-                    or click to select a file</p>
-            }
-        </BencodexDropzone>
-        {typeof value == 'undefined'
-            ? <></>
-            : <BencodexTree value={value} />
-        }
-    </>;
-};
-
 const BencodexUnicodeString = styled.span`
-    &:before { content: '\u201c'; }
-    &:after { content: '\u201d'; }
-    &:hover:after {
-        content: '\u201d (' attr(data-length) ')';
-    }
+&:before { content: '\u201c'; }
+&:after { content: '\u201d'; }
+&:hover:after {
+    content: '\u201d (' attr(data-length) ')';
+}
 `;
 
 const BencodexByteString = styled.span`
+font-family: monospace;
+.hex span { margin-right: 0.2em; }
+.hex:hover:after {
+    content: ' (' attr(data-length) ')';
+}
+.ascii {
+    display: block;
     font-family: monospace;
-    .hex span { margin-right: 0.2em; }
-    .hex:hover:after {
-        content: ' (' attr(data-length) ')';
-    }
-    .ascii {
-        display: block;
-        font-family: monospace;
-        &:before { content: '(ASCII: "'; }
-        &:after { content: '")'; }
-        opacity: 0.7;
-    }
-    .hex .h, .ascii .h { color: red; }
+    &:before { content: '(ASCII: "'; }
+    &:after { content: '")'; }
+    opacity: 0.7;
+}
+.hex .h, .ascii .h { color: red; }
 `;
 
 const BencodexList = styled.table`
-    border: 1px solid transparent;
-    border-collapse: collapse;
-    &:hover {
-        border: 1px solid black;
-    }
-    caption {
-        background-color: #333;
-        color: white;
-    }
-    tr:nth-of-type(odd) {
-        background-color: #eee;
-    }
-    tr:nth-of-type(even) {
-        background-color: white;
-    }
-    tr:hover {
-        background-color: #ddd;
-    }
-    th {
-        font-weight: normal;
-        text-align: left;
-    }
+border: 1px solid transparent;
+border-collapse: collapse;
+&:hover {
+    border: 1px solid black;
+}
+caption {
+    background-color: #333;
+    color: white;
+}
+tr:nth-of-type(odd) {
+    background-color: #eee;
+}
+tr:nth-of-type(even) {
+    background-color: white;
+}
+tr:hover {
+    background-color: #ddd;
+}
+th {
+    font-weight: normal;
+    text-align: left;
+}
 `;
 
 const BencodexDictionary = styled.table`
-    border: 1px solid transparent;
-    border-collapse: collapse;
-    &:hover {
-        border: 1px solid black;
-    }
-    caption {
-        background-color: #333;
-        color: white;
-    }
-    tr:nth-of-type(odd) {
-        background-color: #eee;
-    }
-    tr:nth-of-type(even) {
-        background-color: white;
-    }
-    tr:hover {
-        background-color: #ddd;
-    }
-    th {
-        font-weight: normal;
-        text-align: left;
-    }
+border: 1px solid transparent;
+border-collapse: collapse;
+&:hover {
+    border: 1px solid black;
+}
+caption {
+    background-color: #333;
+    color: white;
+}
+tr:nth-of-type(odd) {
+    background-color: #eee;
+}
+tr:nth-of-type(even) {
+    background-color: white;
+}
+tr:hover {
+    background-color: #ddd;
+}
+th {
+    font-weight: normal;
+    text-align: left;
+}
 `;
 
-
-const BencodexTree = ({ value }) => {
+export const BencodexTree = ({ value }) => {
     const [highlightedIndex, highlightIndex] = useState(null);
 
     if (value == null && typeof value != 'undefined') {
@@ -250,5 +197,3 @@ const BencodexTree = ({ value }) => {
         'and Map'
     );
 };
-
-render(<BencodexViewer />, document.getElementById('app'));
